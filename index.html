@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFF Login Test</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+    <h1>LIFF Login Test</h1>
+    <div id="result">Initializing LIFF...</div>
+
+    <script>
+        async function main() {
+            try {
+                // 1. 初始化 LIFF
+                // *** 請將 "YOUR_LIFF_ID" 替換為您自己的 LIFF ID ***
+                await liff.init({ liffId: "2010674273-rxd1R6eo" });
+
+                // 2. 檢查使用者是否已登入
+                if (!liff.isLoggedIn()) {
+                    // 如果未登入，引導使用者登入
+                    liff.login();
+                } else {
+                    // 3. 如果已登入，獲取使用者資料
+                    const profile = await liff.getProfile();
+                    
+                    // 4. 在畫面上顯示 User ID (uid)
+                    const userId = profile.userId;
+                    document.getElementById("result").textContent = 'User UID: ' + userId;
+                }
+            } catch (err) {
+                // 處理錯誤
+                console.error(err);
+                document.getElementById("result").textContent = 'Error: ' + err;
+            }
+        }
+
+        // 執行主函數
+        main();
+    </script>
+</body>
+</html>
