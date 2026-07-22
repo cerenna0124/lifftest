@@ -79,7 +79,7 @@
     <!-- Initial loading message -->
     <div id="initial-loading">
         <h1>LIFF Login Test</h1>
-        <p id="loading-message">Initializing LIFF...</p>
+        <p id="loading-message">Page loaded. Starting script...</p>
     </div>
 
     <!-- Hidden container for the result, shown after login -->
@@ -93,24 +93,22 @@
 
     <script>
         async function main() {
+            const loadingMessage = document.getElementById("loading-message");
             try {
-<<<<<<< HEAD
-                // 1. 初始化 LIFF
-                // *** 請將 "YOUR_LIFF_ID" 替換為您自己的 LIFF ID ***
-=======
-                // We don't want the login screen to flash, so we wait for init.
-                // The body is blank until we decide what to show.
->>>>>>> 4b6c9ee (update css)
+                loadingMessage.textContent = "Initializing LIFF...";
                 await liff.init({ liffId: "2010674273-9rT5RXzN" });
 
+                loadingMessage.textContent = "Checking login status...";
                 if (!liff.isLoggedIn()) {
-                    // If not logged in, just show the loading message until redirect.
-                    document.getElementById("loading-message").textContent = "Redirecting to login...";
+                    loadingMessage.textContent = "Not logged in. Redirecting to login...";
+                    // The liff.login() call will redirect the page, so execution will stop here.
                     liff.login();
                 } else {
-                    // If logged in, get profile and show the UID container
+                    loadingMessage.textContent = "Logged in. Fetching profile...";
                     const profile = await liff.getProfile();
                     const userId = profile.userId;
+                    
+                    loadingMessage.textContent = "Profile fetched successfully.";
                     
                     // Populate the UID
                     document.getElementById("uid-textbox").value = userId;
@@ -121,8 +119,8 @@
                 }
             } catch (err) {
                 console.error(err);
-                // Show error on the initial screen
-                document.getElementById("loading-message").textContent = 'Error: ' + err.message;
+                // Display a more informative error
+                loadingMessage.textContent = `Error: ${err.code} - ${err.message}`;
             }
         }
 
