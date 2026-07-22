@@ -5,38 +5,141 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIFF Login Test</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f0f2f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        /* Initial loading state styles */
+        #initial-loading {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Glass container for the result page */
+        .glass-container {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .uid-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #uid-textbox {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f8f8f8;
+            color: #333;
+            font-size: 16px;
+            width: 300px;
+            text-align: center;
+            pointer-events: none; 
+        }
+
+        #copy-button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #copy-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>LIFF Login Test</h1>
-    <div id="result">Initializing LIFF...</div>
+
+    <!-- Initial loading message -->
+    <div id="initial-loading">
+        <h1>LIFF Login Test</h1>
+        <p id="loading-message">Initializing LIFF...</p>
+    </div>
+
+    <!-- Hidden container for the result, shown after login -->
+    <div class="glass-container" id="uid-container" style="display: none;">
+        <h1>LIFF Login Test</h1>
+        <div class="uid-wrapper">
+            <input type="text" id="uid-textbox" readonly>
+            <button id="copy-button" onclick="copyUid()">Copy</button>
+        </div>
+    </div>
 
     <script>
         async function main() {
             try {
+<<<<<<< HEAD
                 // 1. 初始化 LIFF
                 // *** 請將 "YOUR_LIFF_ID" 替換為您自己的 LIFF ID ***
+=======
+                // We don't want the login screen to flash, so we wait for init.
+                // The body is blank until we decide what to show.
+>>>>>>> 4b6c9ee (update css)
                 await liff.init({ liffId: "2010674273-9rT5RXzN" });
 
-                // 2. 檢查使用者是否已登入
                 if (!liff.isLoggedIn()) {
-                    // 如果未登入，引導使用者登入
+                    // If not logged in, just show the loading message until redirect.
+                    document.getElementById("loading-message").textContent = "Redirecting to login...";
                     liff.login();
                 } else {
-                    // 3. 如果已登入，獲取使用者資料
+                    // If logged in, get profile and show the UID container
                     const profile = await liff.getProfile();
-                    
-                    // 4. 在畫面上顯示 User ID (uid)
                     const userId = profile.userId;
-                    document.getElementById("result").textContent = 'User UID: ' + userId;
+                    
+                    // Populate the UID
+                    document.getElementById("uid-textbox").value = userId;
+
+                    // Hide loading screen and show the glass container
+                    document.getElementById("initial-loading").style.display = 'none';
+                    document.getElementById("uid-container").style.display = 'block';
                 }
             } catch (err) {
-                // 處理錯誤
                 console.error(err);
-                document.getElementById("result").textContent = 'Error: ' + err;
+                // Show error on the initial screen
+                document.getElementById("loading-message").textContent = 'Error: ' + err.message;
             }
         }
 
-        // 執行主函數
+        function copyUid() {
+            const textbox = document.getElementById("uid-textbox");
+            navigator.clipboard.writeText(textbox.value).then(() => {
+                const button = document.getElementById("copy-button");
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
         main();
     </script>
 </body>
